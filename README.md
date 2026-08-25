@@ -165,9 +165,11 @@ What I can say is that I actually sat down, generated the attack myself, watched
 ## Limitations & What I'd Do Differently in Production
 Being honest about the gaps here, because I think that matters more than pretending this is finished:
 
-- **The credential attack used a wordlist with the answer deliberately inserted.** That was intentional for a controlled, reproducible test, but it means this isn't a realistic measure of how long a real brute-force attempt against a strong password would take.
-- **No account lockout policy was in play.** In a real environment, 56+ failed authentication attempts against a single account in a short window should trigger an account lockout well before an attacker gets through a wordlist — that control wasn't tested here.
-- **No automated response.** Wazuh alerted correctly, but nothing automatically blocked the attacking IP or disabled the account. In production I'd want this tied into an active response (like the automated `iptables` blocking in my other lab) rather than requiring a human to notice and act.
+**The credential attack used a wordlist with the answer deliberately inserted.** That was intentional for a controlled, reproducible test, but it means this isn't a realistic measure of how long a real brute-force attempt against a strong password would take.
+
+**No account lockout policy was in play.** In a real environment, 56+ failed authentication attempts against a single account in a short window should trigger an account lockout well before an attacker gets through a wordlist — that control wasn't tested here.
+
+**No automated response.** Wazuh alerted correctly, but nothing automatically blocked the attacking IP or disabled the account. In production I'd want this tied into an active response (like the automated `iptables` blocking in my other lab) rather than requiring a human to notice and act.
 - **Single test window, single account.** This lab tested one account against one service (RDP). A real assessment would test password spraying across multiple accounts and multiple services (SMB, WinRM, RDP) to get a fuller picture of exposure.
 - **The SMB mount attempt wasn't fully validated end-to-end** in this write-up — the permission-denied result for the non-privileged account is well documented, but the follow-up attempt with the discovered credential needs to be captured just as clearly for a complete picture of what lateral movement was actually achievable.
 - **No log-forwarding hardening.** If an attacker can clear the local Security log, in a hardened production environment logs should also be forwarded to a remote/immutable log store in near-real-time so local clearing doesn't destroy the only copy of the evidence.
